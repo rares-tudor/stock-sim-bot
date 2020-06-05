@@ -1,12 +1,12 @@
 {
 	"prefix": ".",
-    "token": "NzA5MTY5MDc3NTI4MDM1MzY5.XtqHDw.csO-cNi3PPo_DOzGotHBMU0HlhQ",
+    "token": "your_token",
     "bot_name": "Stock Sim Bot",
-    "bot_name_footer": "Stock Sim Bot, © Kaiser",
+    "bot_name_footer": "Stock Sim Bot, © rares-tudor",
     "bot_avi_url": "https://postimg.cc/7CS3683S/4959a66c",
-    "guildID": "517712849905123338",
-    "unb_token": " eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzA0MjE1NTgwMjA5MTg0NzY5IiwiaWF0IjoxNTg5OTI3MTYwfQ.t4RaGouz2ehK3tpfTLhslKSgtBIyd9JPAGEG2cUa70c",
-    "main_channel_id": "709398942919557170",
-    "admin_id": "304215580209184769",
-    "role_id": "709405462831038514"
+    "guildID": "your_guild",
+    "unb_token": "your_unb_token",
+    "main_channel_id": "your_channel_id",
+    "admin_id": "your_id",
+    "role_id": "your_role"
 } 
