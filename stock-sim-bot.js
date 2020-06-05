@@ -375,6 +375,14 @@ client.on('message', async msg => {
         // Initializing arguments
         let co_name = args[0];
         let inv_amount = args[1];
+        var cash_amount;
+
+        // Checking if the user has enough balance
+        // unboatClient.getUserBalance(guildID, msg.author.id).then(user => function () {
+        //     cash_amount = Number(user[0]);
+        //     console.log("User Cash:", user.cash);
+        // });
+        // console.log(cash_amount);
 
         // Editing the user balance according to the investment
         unboatClient.editUserBalance(guildID, msg.author.id, {cash: -inv_amount}, "Reduction of balance");
