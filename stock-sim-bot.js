@@ -378,11 +378,13 @@ client.on('message', async msg => {
         var cash_amount;
 
         // Checking if the user has enough balance
-        // unboatClient.getUserBalance(guildID, msg.author.id).then(user => function () {
-        //     cash_amount = Number(user[0]);
-        //     console.log("User Cash:", user.cash);
-        // });
-        // console.log(cash_amount);
+        await unboatClient.getUserBalance(guildID, msg.author.id).then(user => cash_amount = user.cash).catch(error => {
+            console.log(error);
+        });
+
+        if(cash_amount <= 0) {
+            return msg.reply("you can't invest if your cash balance is 0 or below.");
+        }
 
         // Editing the user balance according to the investment
         unboatClient.editUserBalance(guildID, msg.author.id, {cash: -inv_amount}, "Reduction of balance");
@@ -426,11 +428,13 @@ client.on('message', async msg => {
         if(args[0].length === 0) {
             return msg.reply(' error - you must specify the name of a company');
         }
-
-        var _name = args[0]; // Initializing argument
+        
+        // Initializing arguments
+        var _name = args[0];
+        var _id = args[1];
 
         // Finding the specified investment
-        const inv = await Investments.findOne({attributes: ['amount'], where: {co_name: _name}});
+        const inv = await Investments.findOne({attributes: ['amount'], where: {co_name: _name, id: _id}});
         if(inv) {
             try {
                 // Returning the investment to the user by adding the amount to his balance
@@ -441,7 +445,7 @@ client.on('message', async msg => {
                 const rowCount = await Investments.destroy({where: {co_name: _name}});
                 if(!rowCount) return msg.reply('The investment does not exist.');
                 
-                return msg.reply('Your investment has been successfully withdrawn.');
+                return msg.reply('your investment has been successfully withdrawn.');
             } catch(e) {
                 return msg.reply(' something went wrong: '.concat(e));
             }
