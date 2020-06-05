@@ -1,0 +1,12 @@
+{
+	"prefix": ".",
+    "token": "your_token",
+    "bot_name": "Stock Sim Bot",
+    "bot_name_footer": "Stock Sim Bot, © rares-tudor",
+    "bot_avi_url": "https://postimg.cc/7CS3683S/4959a66c",
+    "guildID": "your_guild",
+    "unb_token": "your_unb_token",
+    "main_channel_id": "your_channel_id",
+    "admin_id": "your_id",
+    "role_id": "your_role"
+} 
