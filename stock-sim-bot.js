@@ -463,43 +463,38 @@ client.on('messageDelete', async msg => {
         var coRand = Math.floor(Math.random() * 3) + 1; // Replace the 3 with your amount of companies
         var new_rel_gr = (Math.random() * 2) + 0.5; // The formula for relative growth
         const co = await Companies.findOne({where: {id: coRand}});
-        var co_name = co.get('name'); // For easier reading purposes
+        var _co_name = co.get('name'); // For easier reading purposes
 
         // Formulas for the new value and the absolute growth
-        let new_val = co.get('value') + (co.get('value') * new_rel_gr);
+        let new_val = co.get('value') + (co.get('value') * (100 - new_rel_gr));
         let new_abs_gr = new_val - new_rel_gr;
 
         // Updating the values
-        const affectedRows_val = await Companies.update( { value: new_val }, { where: { name: co.get('name') } } );
-        const affectedRows_abs_gr = await Companies.update( { abs_gr: new_abs_gr }, { where: { name: co.get('name') } } );
-        const affectedRows_rel_gr = await Companies.update( { rel_gr: new_rel_gr }, { where: { name: co.get('name') } } );
+        const affectedRows_val = await Companies.update( { value: new_val }, { where: { name: _co_name } } );
+        const affectedRows_abs_gr = await Companies.update( { abs_gr: new_abs_gr }, { where: { name: _co_name } } );
+        const affectedRows_rel_gr = await Companies.update( { rel_gr: new_rel_gr }, { where: { name: _co_name } } );
 
         // Letting the users know
         if((affectedRows_abs_gr > 0) && (affectedRows_rel_gr > 0) && (affectedRows_val > 0)) {
-            msg.channel.send(`The value of the ${co_name} company has been updated.`);
+            msg.channel.send(`The value of the ${_co_name} company has been updated.`);
         }
 
         // Updating all the investments
-        const userList = await Company_Investments.findAll({
-            where: { companiesId: co.get('id') }, 
-            include: [{ model: Companies, as: Companies.id },
-                      { model: Investments, as: Investments.user_no }]})
-        .then(async function distribute() {
-            for(id in Investments.user_no)
-            {
-                const user = await Investments.findOne({ where: { user_no: id}});
-                if(user) {
-                    try {
-                        user.setValue(user.get('amount') * new_rel_gr);
-                    }
-                    catch(e) {
-                        return msg.reply(', something went wrong: '.concat(e));
-                    }
-                }
+        const userList = await Investments.findAll({attributes: ['co_name', 'user_no', 'amount'], where: {co_name: _co_name}});
+        const user_no_str = userList.map(u => u.user_no) || "No company found.";
+        const amount_str = userList.map(a => a.amount) || "No company found.";
+
+        for(let i = 0; i < user_no_str.length; ++i) {
+            try {
+                user_no_str[i].setValue(Number(amount_str[i]) *  (100 - new_rel_gr));
             }
+            catch(e) {
+                return msg.reply('something went wrong:'.concat(e));
+            }     
+        }
             // Letting the users know
             msg.channel.send('The value of the investments has been updated.');
-        });
+        };
 
         // Repeating the procedure
         msg.channel.send("Initializing event procedures. (Ignore this message)")
@@ -508,6 +503,6 @@ client.on('messageDelete', async msg => {
         });
         bot_bool = true;
     }
-});
+);
             
 client.login(token); // Logging in with the token
