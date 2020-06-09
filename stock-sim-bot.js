@@ -481,16 +481,18 @@ client.on('messageDelete', async msg => {
 
         // Updating all the investments
         const userList = await Investments.findAll({attributes: ['co_name', 'user_no', 'amount'], where: {co_name: _co_name}});
-        const user_no_str = userList.map(u => u.user_no) || "No company found.";
-        const amount_str = userList.map(a => a.amount) || "No company found.";
+        const co_name_str = userList.map(c => c.co_name) || "No company found.";
 
-        for(let i = 0; i < user_no_str.length; ++i) {
-            try {
-                user_no_str[i].setValue(Number(amount_str[i]) *  (100 - new_rel_gr));
+        for(let i = 0; i < co_name_str.length; ++i) {
+            const co = await Investments.findOne({where: {co_name: co_name_str[i]}});
+            if(co) {
+                try {
+                    co.setValue(Number(co.get('amount')) *  (100 - new_rel_gr));
+                }
+                catch(e) {
+                    return msg.reply('something went wrong:'.concat(e));
+                }     
             }
-            catch(e) {
-                return msg.reply('something went wrong:'.concat(e));
-            }     
         }
             // Letting the users know
             msg.channel.send('The value of the investments has been updated.');
