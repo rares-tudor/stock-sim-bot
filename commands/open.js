@@ -1,7 +1,19 @@
+const Discord = require('discord.js');
+const {bot_avi_url, bot_name_footer} = require('../config.json');
+
 module.exports = {
     name: 'open',
     description: 'Opens the stock market manually.',
     execute(msg) {
-        msg.channel.send("<@&709405462831038514> The stock market has been opened.");
+        const opEmbed = new Discord.MessageEmbed()
+        .setColor('#2fff00')
+        .setTitle('Opening the stock market')
+        .setAuthor(msg.author.username, msg.author.avatarURL)
+        .setDescription('Success')
+        .setThumbnail(bot_avi_url)
+        .addField({name: ':white_check_mark:The stock market has been succesfully opened.'})
+        .setTimestamp()
+        .setFooter(bot_name_footer);
+        msg.channel.send(opEmbed);
     }
 }

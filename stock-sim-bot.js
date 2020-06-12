@@ -91,26 +91,13 @@ Investments.init({ // Investment model
     },
     sequelize: sequelize, modelName: 'Investments'});
 
-class Company_Investments extends Model {}
-Company_Investments.init({ // M:N Model between Company and Investment Models
-    co_inv_id: {
-        type: Sequelize.INTEGER,
-        unique: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    },
-}, {sequelize: sequelize, modelName: 'Company_Investments'});
-
-// Establishing M:N connections
-Investments.belongsToMany(Companies, { through: 'Company_Investments' });
-Companies.belongsToMany(Investments, { through: 'Company_Investments' });
 
 var sample = ""; // Sample string for concatenating
 var open = false; // Market starts off closed
 var bot_bool = false; // Decides whether the bot executes the random events or not (DEFAULT: FALSE)
         
 const helpEmbed = new Discord.MessageEmbed() // Creating the info embed
-    .setColor('#0099ff')
+    .setColor('#3dbdd8')
     .setTitle('All Commands')
     .setAuthor(bot_name, bot_avi_url)
     .setDescription('All commands with an explanation and permissions.')
@@ -128,8 +115,8 @@ const helpEmbed = new Discord.MessageEmbed() // Creating the info embed
         {name: '.withdrawinvestment', value: '```Example: \n.withdrawinvestment CompanyName``` \nLets you withdraw an investment. \nPerm: Everybody'},
         {name: '.help', value: 'Shows this embed. \nPerm: ADMIN', inline: true}
         )
-        .setTimestamp()
-        .setFooter(bot_name_footer, bot_avi_url);
+    .setTimestamp()
+    .setFooter(bot_name_footer, bot_avi_url);
 
 // Calculating the time required to wait before next random events (continued in the messageDelete event, line 424)
 function calcDelay() {
@@ -144,9 +131,9 @@ function calcDelay() {
 client.once('ready', () => { // Bot ready, at startup
     let date = new Date(); 
     console.log(`Logged in as ${client.user.tag}!`);
-    Companies.sync(); Investments.sync(); Company_Investments.sync(); // Synchronizing the DB, add {force: true} as an argument for each one if you want to reset them at each use.
+    Companies.sync(); Investments.sync(); // Synchronizing the DB, add {force: true} as an argument for each one if you want to reset them at each use.
     client.channels.fetch(main_channel_id) 
-    .then(channel => channel.send(('Bot initialized. Time: ').concat(date.toString()))); // Sending confirmation to main channel
+    .then(channel => channel.send(':white_check_mark: Bot initialized. \nTime: '.concat(date.toString()))); // Sending confirmation to main channel
 });
 
 
@@ -170,7 +157,8 @@ client.on('message', async msg => {
         .then(message => {
             message.delete({timeout: delay_ms});
         });
-        bot_bool = true; // Required
+
+        bot_bool = true; // Required for next steps
     }
     else if(command === 'close') { // Closes the market, deactivates some functions and all events
         if(!open) {
@@ -206,7 +194,7 @@ client.on('message', async msg => {
             if(co) {
                 try {
                     const coEmbed = new Discord.MessageEmbed() // Creating the embed..
-                    .setColor('#0099ff')
+                    .setColor('#3dbdd8')
                     .setTitle(co.get('name'))
                     .setAuthor(bot_name, bot_avi_url)
                     .setDescription('Updates for the '.concat(co.get('name'), ' Company'))
@@ -219,7 +207,7 @@ client.on('message', async msg => {
                         )
                         .setTimestamp()
                         .setFooter(bot_name_footer, bot_avi_url);
-                    return msg.reply(coEmbed); // ..and printing it
+                    return msg.channel.send(coEmbed); // ..and printing it
                     }
                     catch(e) {
                         console.log(e);
@@ -231,7 +219,7 @@ client.on('message', async msg => {
             if(co) {
                 try {
                     const coEmbed = new Discord.MessageEmbed() // Creating the embed..
-                    .setColor('#0099ff')
+                    .setColor('#3dbdd8')
                     .setTitle(co.get('name'))
                     .setAuthor(bot_name, bot_avi_url)
                     .setDescription('Updates for the '.concat(co.get('name'), ' Company'))
