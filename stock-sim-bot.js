@@ -150,7 +150,8 @@ client.on('message', async msg => {
         if(msg.author.id != admin_id) {
             return msg.channel.reply("you dont have the permission to do this.");
         }
-        client.commands.get('open').execute(msg);
+        msg.author.avatarURL
+        client.commands.get('open').execute(msg, msg.author.username, msg.author.avatarURL);
         open = true;
         let delay_ms = calcDelay(); // Starting to execute the random fluctuations
         msg.channel.send("Initializing event procedures. (Ignore this message)")
@@ -168,13 +169,24 @@ client.on('message', async msg => {
             return msg.channel.reply("you dont have the permission to do this.");
         }
 
-        client.commands.get('close').execute(msg);
+        client.commands.get('close').execute(msg, msg.author.username, msg.author.avatarURL);
         open = false;
     }
     else if(command === 'showcompanies') { // Shows all registered companies
         const coList = await Companies.findAll({attributes: ['name']});
         const coString = coList.map(c => c.name).join(', ') || 'Error - No companies registered'; // Searching for every single company
-        return msg.channel.send(`List of companies registered: ${coString}`); // Showing all companies by their names
+        const scEmbed = new Discord.MessageEmbed()
+        .setColor('#2fff00')
+        .setTitle('List of registered companies')
+        .setAuthor(msg.author.username, msg.author.avatarURL)
+        .setThumbnail(bot_avi_url)
+        .addField('\u200b', ' \u200b')
+        .setTimestamp()
+        .setFooter(bot_name_footer, bot_avi_url);
+        for(let i = 0; i<coString.length; ++i) {
+            scEmbed.addField('Company number '.concat(i.toString()), coString[i].toString(), true);
+        }
+        return msg.channel.send(scEmbed); // Showing all companies by their names
     } 
     else if(command === 'showcompany') { // Shows the info of a company using embeds
         // Checking for NULL arguments
